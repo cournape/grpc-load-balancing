@@ -34,7 +34,10 @@ class Greeter(helloworld_pb2_grpc.GreeterServicer):
         self._std = std
 
     def SayHello(self, request, context):
-        latency = random.normalvariate(self._average, self._std)
+        if self._std == 0:
+            latency = self._average
+        else:
+            latency = random.normalvariate(self._average, self._std)
         logger.info("Sleeping for %.2f ms", latency * 1000)
         time.sleep(latency)
         return helloworld_pb2.HelloReply(message='Hello, %s!' % request.name)
